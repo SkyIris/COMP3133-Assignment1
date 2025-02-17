@@ -51,6 +51,49 @@ const addCard = {
 },
 }
 
+const updateCard = {
+    type: CardType,
+    description:"Update card entries",
+    args:{
+        id:{type:GraphQLString},
+        name: {type: GraphQLString},
+        cost: {type: GraphQLString},
+        type: {type: GraphQLString},
+        craft: {type: GraphQLString},
+        effect: {type: GraphQLString}
+    },
+    async resolve(parent,args){
+        const cardUpdated = await Card.findOneAndUpdate({_id: args.id},{
+            name: args.name, cost: args.cost, craft: args.craft, effect: args.effect
+        },
+        {
+            new: true, runValidators:true
+        })
+
+    if(!cardUpdated){
+        throw new Error("No card found with that ID")
+    }
+    return cardUpdated
+    },
+}
+
+const deleteCard = {
+    type:GraphQLString,
+    description: "Delete card",
+    args:{
+        id:{type:GraphQLString},
+    },
+    async resolve(parent, args){
+        const cardDeleted = await Card.findOneAndDelete({
+            _id: args.id})
+        if(!cardDeleted){
+            throw new Error("No card with that ID")
+        }
+
+        return("Card deleted")
+    }
+}
 
 
-module.exports = {register, addCard}
+
+module.exports = {register, addCard, updateCard, deleteCard}

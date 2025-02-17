@@ -3,7 +3,7 @@ const{ GraphQLSchema, GraphQLObjectType} = require("graphql")
 
 // queries, mutations, querytype
 const{users, user, cards, card} = require("./queries")
-const {register, addCard} = require("./mutations")
+const {register, addCard, updateCard, deleteCard} = require("./mutations")
 
 const QueryType = new GraphQLObjectType({
     name:"QueryType",
@@ -14,7 +14,7 @@ const QueryType = new GraphQLObjectType({
 const MutationType = new GraphQLObjectType({
     name: "MutationType",
     description: "Mutations",
-    fields: {register, addCard},
+    fields: {register, addCard, updateCard, deleteCard},
 })
 
 
