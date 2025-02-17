@@ -1,5 +1,5 @@
-const {} = require("graphql")
 const{} = require("./types")
+const{User} = require("../models")
 const{GraphQLString} = require("graphql")
 
 const register = {
@@ -8,7 +8,8 @@ const register = {
     {
         username: {type: GraphQLString},
         password: {type: GraphQLString},
-        email: {type: GraphQLString}
+        email: {type: GraphQLString},
+
     },
 
     async resolve(parent, args){
