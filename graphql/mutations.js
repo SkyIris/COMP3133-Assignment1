@@ -17,8 +17,11 @@ const register = {
         const user = new User({username, password, email})
 
         await user.save()
+        return ("new user created")
     }
 
 }
+
+
 
 module.exports = {register}
