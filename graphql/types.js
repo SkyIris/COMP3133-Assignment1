@@ -1,6 +1,6 @@
 const{GraphQLObjectType} = require("graphql")
 
-const {User, Post, Comment} = require("../models")
+const {User, Card} = require("../models")
 
 const UserType = new GraphQLObjectType({
     name:"User",
@@ -25,3 +25,5 @@ const CardType = new GraphQLObjectType({
         effect: {type: GraphQLString}
     })
 })
+
+module.exports = {UserType, CardType}
