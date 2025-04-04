@@ -2,7 +2,27 @@ const{} = require("./types")
 const {CardType} = require("./types")
 const{User} = require("../models")
 const{Card} = require("../models")
-const{GraphQLString} = require("graphql")
+const{GraphQLString, graphql} = require("graphql")
+const {createToken} = require("../util/auth")
+
+const addEmployee={
+    type:GraphQLString,
+    description:"add new employee",
+    args:
+    {
+        firstName:{type:GraphQLString},
+        lastName:{type:GraphQLString},
+        email:{type:GraphQLString}
+    },
+
+    async resolve(parent, args){
+        const {firstName, lastName, email} = args
+        const employee = new Employee({firstName, lastName, email})
+
+        await employee.save()
+        return ("new employee created")
+    }
+}
 
 const register = {
     type: GraphQLString,
@@ -20,7 +40,9 @@ const register = {
         const user = new User({username, password, email})
 
         await user.save()
-        return ("new user created")
+        const token = createToken(user)
+        return (token)
+        
     }
 
 }
@@ -94,6 +116,21 @@ const deleteCard = {
     }
 }
 
+const login = {
+    type: GraphQLString,
+    args:{
+        username:{type:GraphQLString},
+        password:{type:GraphQLString}
+    },
+    async resolve(parent,args){
+        const user = await User.findOne({username: args.username})
+        if(!user || args.password !== user.password){
+            throw new Error("wrong password or username")
+        }
+        const token = createToken(user)
+        return(token)
+    }
+}
 
 
-module.exports = {register, addCard, updateCard, deleteCard}
+module.exports = {register, addCard, updateCard, deleteCard, addEmployee, login}

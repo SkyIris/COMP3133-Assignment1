@@ -1,4 +1,5 @@
 module.exports = {
     User: require("./User"),
-    Card: require("./Card")
+    Card: require("./Card"),
+    Employee: require("./Employee")
 }
