@@ -1,7 +1,8 @@
 const {GraphQLList, GraphQLID} = require ("graphql")
 const {UserType} = require("./types")
 const {CardType} = require("./types")
-const{User, Card} = require("../models")
+const {EmployeeType} = require("./types")
+const{User, Card, Employee} = require("../models")
 
 const users = {
     type: new GraphQLList(UserType),
@@ -36,6 +37,23 @@ const card = {
         return Card.findById(args.id)
     }
 }
-module.exports = {users, user, cards, card}
+
+const employees = {
+    type: new GraphQLList(EmployeeType),
+    description: "Retrieves list of employee",
+    resolve(){
+        return Employee.find()
+    }
+}
+
+const employee = {
+    type:EmployeeType,
+    description: "finds one employee",
+    args:{id: {type: GraphQLID} },
+    resolve(_,args){
+        return Employee.findById(args.id)
+    }
+}
+module.exports = {users, user, cards, card, employee, employees}
 
 

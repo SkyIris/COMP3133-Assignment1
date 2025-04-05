@@ -1,12 +1,13 @@
-const{} = require("./types")
+const{ EmployeeType } = require("./types")
 const {CardType} = require("./types")
 const{User} = require("../models")
 const{Card} = require("../models")
+const{Employee} = require('../models')
 const{GraphQLString, graphql} = require("graphql")
 const {createToken} = require("../util/auth")
 
 const addEmployee={
-    type:GraphQLString,
+    type:EmployeeType,
     description:"add new employee",
     args:
     {
@@ -15,12 +16,57 @@ const addEmployee={
         email:{type:GraphQLString}
     },
 
-    async resolve(parent, args){
+    async resolve(parent, args, {verifiedUser}){
+
+        if(!verifiedUser){
+            throw new Error("Invalid credentials. please login")
+        }
         const {firstName, lastName, email} = args
         const employee = new Employee({firstName, lastName, email})
 
-        await employee.save()
-        return ("new employee created")
+        return employee.save()
+        
+    }
+}
+
+const updateEmployee = {
+    type: EmployeeType,
+    description:"Update employee entries",
+    args:{
+        id:{type:GraphQLString},
+        firstName: {type: GraphQLString},
+        lastName: {type: GraphQLString},
+        email: {type: GraphQLString},
+    },
+    async resolve(parent,args){
+        const employeeUpdated = await Employee.findOneAndUpdate({_id: args.id},{
+            firstName: args.firstName, lastName: args.lastName, email: args.email
+        },
+        {
+            new: true, runValidators:true
+        })
+
+    if(!employeeUpdated){
+        throw new Error("No employee found with that ID")
+    }
+    return employeeUpdated
+    },
+}
+
+const deleteEmployee = {
+    type:GraphQLString,
+    description: "Delete employee",
+    args:{
+        id:{type:GraphQLString},
+    },
+    async resolve(parent, args){
+        const employeeDeleted = await Employee.findOneAndDelete({
+            _id: args.id})
+        if(!employeeDeleted){
+            throw new Error("No employee with that ID")
+        }
+
+        return("Employee deleted")
     }
 }
 
@@ -133,4 +179,4 @@ const login = {
 }
 
 
-module.exports = {register, addCard, updateCard, deleteCard, addEmployee, login}
+module.exports = {register, addCard, updateCard, deleteCard, addEmployee, updateEmployee, deleteEmployee, login}

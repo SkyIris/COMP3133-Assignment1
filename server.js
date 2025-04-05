@@ -11,6 +11,7 @@ connectDB()
 
 app.use(authenticate)
 
+
 app.get("/authtest",(req,res)=>{
     res.json(createToken({username:"akeen",password:"zhong",email:"a@b.com"}))
 })
